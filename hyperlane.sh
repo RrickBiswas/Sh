@@ -57,18 +57,14 @@ echo "Private key stored and environment sourced."
 echo "Please enter the token contract address (e.g., Brett on Base): "
 read TOKEN_ADDRESS
 
-# Initialize Warp Route configuration
+# Initialize Warp Route configuration without prompts
 echo "Initializing Warp Route configuration..."
-hyperlane warp init -k $PRIVATE_KEY -y --registry=https://github.com/hyperlane-xyz/hyperlane-registry --out=./configs/warp-route-deployment.yaml <<EOF
-$OWNER_ADDRESS
-Mainnet
-Base
-Zora
-Collateral
-Synthetic
-Y
-$TOKEN_ADDRESS
-EOF
+hyperlane warp init -k $PRIVATE_KEY -y \
+  --registry=https://github.com/hyperlane-xyz/hyperlane-registry \
+  --out=./configs/warp-route-deployment.yaml \
+  --from-address=$OWNER_ADDRESS \
+  --network=Mainnet \
+  --token-address=$TOKEN_ADDRESS
 
 echo "Warp Route configuration initialized."
 
