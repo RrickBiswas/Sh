@@ -22,6 +22,24 @@ fi
 
 echo "Node.js is installed."
 
+# Check if npm is installed
+if ! command -v npm &> /dev/null
+then
+    echo "npm is not installed. Installing npm..."
+    
+    # Install npm
+    sudo apt install -y npm
+
+    # Verify npm installation
+    if ! command -v npm &> /dev/null
+    then
+        echo "Failed to install npm. Please install it manually."
+        exit 1
+    fi
+fi
+
+echo "npm is installed."
+
 # Install Hyperlane CLI
 echo "Installing Hyperlane CLI..."
 npm install -g @hyperlane-xyz/cli
