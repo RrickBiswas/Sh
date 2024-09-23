@@ -43,32 +43,43 @@ if [[ ! $PRIVATE_KEY =~ ^[0-9a-fA-F]{64}$ ]]; then
   exit 1
 fi
 
-# Prompt user for owner address
-echo "Please enter your owner address (your wallet address): "
-read OWNER_ADDRESS
-
 # Create or update .env file
 echo "Creating .env file..."
 echo "HYP_KEY=$PRIVATE_KEY" > .env
 source .env
 echo "Private key stored and environment sourced."
 
+# Prompt user for owner address
+echo "Please enter your owner address (your wallet address): "
+read OWNER_ADDRESS
+
 # Prompt user for token address
 echo "Please enter the token contract address (e.g., Brett on Base): "
 read TOKEN_ADDRESS
 
-# Initialize Warp Route configuration without prompts
+# Prompt user for additional config details
+echo "Creating deployment config for Warp Route..."
+echo "Enter the type of route (collateral/collateralVault/native): "
+read ROUTE_TYPE
+
+# Set up deployment configuration file
+CONFIG_FILE="./warp-route-deployment.yaml"
+cat <<EOL > $CONFIG_FILE
+version: "1.0"
+routes:
+  - chain: "YOUR_CHAIN_NAME"  # Replace with your chain name
+    type: "$ROUTE_TYPE"
+    address: "$TOKEN_ADDRESS"
+    isNft: false  # Change to true if using ERC721
+EOL
+
+echo "Deployment config created at $CONFIG_FILE."
+
+# Initialize Warp Route configuration
 echo "Initializing Warp Route configuration..."
-hyperlane warp init -k $PRIVATE_KEY -y \
-  --registry=https://github.com/hyperlane-xyz/hyperlane-registry \
-  --out=./configs/warp-route-deployment.yaml \
-  --from-address=$OWNER_ADDRESS \
-  --network=Mainnet \
-  --token-address=$TOKEN_ADDRESS
+hyperlane warp init -k $PRIVATE_KEY -y --out=$CONFIG_FILE
 
-echo "Warp Route configuration initialized."
-
-# Deploy Warp Route Contracts with valid private key
+# Deploy Warp Route Contracts
 echo "Deploying Warp Route contracts..."
 hyperlane warp deploy --key $PRIVATE_KEY --yes
 
