@@ -3,9 +3,24 @@
 # Check if Node.js is installed
 if ! command -v node &> /dev/null
 then
-    echo "Node.js is not installed. Please install Node.js from https://nodejs.org/en"
-    exit
+    echo "Node.js is not installed. Installing Node.js..."
+    
+    # Update the package index
+    sudo apt update
+    
+    # Install Node.js using NodeSource (LTS version)
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+    sudo apt install -y nodejs
+
+    # Verify Node.js installation
+    if ! command -v node &> /dev/null
+    then
+        echo "Failed to install Node.js. Please install it manually."
+        exit 1
+    fi
 fi
+
+echo "Node.js is installed."
 
 # Install Hyperlane CLI
 echo "Installing Hyperlane CLI..."
@@ -15,7 +30,7 @@ npm install -g @hyperlane-xyz/cli
 if ! command -v hyperlane &> /dev/null
 then
     echo "Hyperlane CLI installation failed. Please check for errors."
-    exit
+    exit 1
 fi
 
 echo "Hyperlane CLI installed successfully."
@@ -68,4 +83,3 @@ echo "You can now test bridging in the Hyperlane sandbox UI."
 echo "Visit https://hyperlane.superbridge.app/ and customize the warp route with your config file located at $CONFIG_PATH."
 
 echo "Setup complete! Follow further instructions in the Hyperlane docs for going to production."
-
