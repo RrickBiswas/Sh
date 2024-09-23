@@ -54,8 +54,14 @@ fi
 echo "Hyperlane CLI installed successfully."
 
 # Prompt user for private key and save it in .env file
-echo "Please enter your EVM wallet private key (used for deploying contracts): "
-read -s PRIVATE_KEY
+echo "Please enter your EVM wallet private key (64 characters long, no '0x' prefix): "
+read PRIVATE_KEY
+
+# Validate private key format (64 hex characters)
+if [[ ! $PRIVATE_KEY =~ ^[0-9a-fA-F]{64}$ ]]; then
+  echo "Error: Invalid private key format. Please ensure it's a 64-character hex string."
+  exit 1
+fi
 
 # Create or update .env file
 echo "Creating .env file..."
@@ -82,15 +88,9 @@ EOF
 
 echo "Warp Route configuration initialized."
 
-# Deploy Warp Route Contracts
+# Deploy Warp Route Contracts with valid private key
 echo "Deploying Warp Route contracts..."
-hyperlane warp deploy <<EOF
-N
-N
-Y
-EOF
-
-echo "Warp Route contracts deployed."
+hyperlane warp deploy --key $PRIVATE_KEY --yes
 
 # Output the path to the deployment config
 CONFIG_PATH="$HOME/.hyperlane/deployments/warp_routes"
