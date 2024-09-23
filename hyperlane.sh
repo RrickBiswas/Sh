@@ -4,20 +4,9 @@
 if ! command -v node &> /dev/null
 then
     echo "Node.js is not installed. Installing Node.js..."
-    
-    # Update the package index
     sudo apt update
-    
-    # Install Node.js using NodeSource (LTS version)
     curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
     sudo apt install -y nodejs
-
-    # Verify Node.js installation
-    if ! command -v node &> /dev/null
-    then
-        echo "Failed to install Node.js. Please install it manually."
-        exit 1
-    fi
 fi
 
 echo "Node.js is installed."
@@ -26,16 +15,7 @@ echo "Node.js is installed."
 if ! command -v npm &> /dev/null
 then
     echo "npm is not installed. Installing npm..."
-    
-    # Install npm
     sudo apt install -y npm
-
-    # Verify npm installation
-    if ! command -v npm &> /dev/null
-    then
-        echo "Failed to install npm. Please install it manually."
-        exit 1
-    fi
 fi
 
 echo "npm is installed."
@@ -63,8 +43,9 @@ if [[ ! $PRIVATE_KEY =~ ^[0-9a-fA-F]{64}$ ]]; then
   exit 1
 fi
 
-# Derive wallet address from private key
-OWNER_ADDRESS=$(npx ethers.js getAddressFromPrivateKey $PRIVATE_KEY)
+# Prompt user for owner address
+echo "Please enter your owner address (your wallet address): "
+read OWNER_ADDRESS
 
 # Create or update .env file
 echo "Creating .env file..."
