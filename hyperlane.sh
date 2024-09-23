@@ -63,6 +63,9 @@ if [[ ! $PRIVATE_KEY =~ ^[0-9a-fA-F]{64}$ ]]; then
   exit 1
 fi
 
+# Derive wallet address from private key
+OWNER_ADDRESS=$(npx ethers.js getAddressFromPrivateKey $PRIVATE_KEY)
+
 # Create or update .env file
 echo "Creating .env file..."
 echo "HYP_KEY=$PRIVATE_KEY" > .env
@@ -75,9 +78,9 @@ read TOKEN_ADDRESS
 
 # Initialize Warp Route configuration
 echo "Initializing Warp Route configuration..."
-hyperlane warp init <<EOF
-Y
-mainnet
+hyperlane warp init -k $PRIVATE_KEY -y <<EOF
+$OWNER_ADDRESS
+Mainnet
 Base
 Zora
 Collateral
