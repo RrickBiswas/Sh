@@ -59,7 +59,7 @@ read TOKEN_ADDRESS
 
 # Initialize Warp Route configuration
 echo "Initializing Warp Route configuration..."
-hyperlane warp init -k $PRIVATE_KEY -y <<EOF
+hyperlane warp init -k $PRIVATE_KEY -y --registry=https://github.com/hyperlane-xyz/hyperlane-registry --out=./configs/warp-route-deployment.yaml <<EOF
 $OWNER_ADDRESS
 Mainnet
 Base
